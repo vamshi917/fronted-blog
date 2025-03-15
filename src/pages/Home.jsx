@@ -98,7 +98,7 @@ const Home = () => {
         // {console.log(post)}
         return (
           <div
-            className="w-[35vw] sm:w-[40vw] rounded-md shadow-md my-10 p-3 mx-auto"
+            className=" sm:w-[40vw] rounded-md shadow-md my-10 p-3 mx-auto"
             key={post._id}
           >
             <div className="flex justify-end gap-3 text-xl ">
