@@ -2,12 +2,17 @@ import { useState, useEffect } from "react";
 import { AiFillDelete } from "react-icons/ai";
 import { MdOutlineEdit } from "react-icons/md";
 import toast, { Toaster } from "react-hot-toast";
+// import ReactLoading from "react-loading";
+import MoonLoader from "react-spinners/MoonLoader";
+
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
 
   const [editbutton, setEditButton] = useState(false);
   const [selectedPost, setSelectedPost] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -18,9 +23,13 @@ const Home = () => {
 
   // GET DATA =====
   const getPosts = async () => {
-    const response = await fetch("https://blogpost-mern-five.vercel.app/get-blogs");
+    setLoading(true);
+    const response = await fetch(
+      "https://blogpost-mern-five.vercel.app/get-blogs"
+    );
     // console.log(response)
     const data = await response.json();
+    setLoading(false);
     // console.log(data.blogs);
     setPosts(data.blogs);
   };
@@ -28,9 +37,12 @@ const Home = () => {
   // DELETE DATA ======
 
   const handleDeleteBlog = async (id) => {
-    const response = await fetch(`https://blogpost-mern-five.vercel.app/delete-blog/${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `https://blogpost-mern-five.vercel.app/delete-blog/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
     try {
       if (response.status === 200) {
         // console.log("Deleted");
@@ -42,33 +54,46 @@ const Home = () => {
     }
   };
 
-
   // UPDATE DATA=====
 
-  const handleUpdateBlog = async (id) =>{
+  const handleUpdateBlog = async (id) => {
     // console.log(title, description)
-    const response = await fetch(`https://blogpost-mern-five.vercel.app/update-blog/${id}`,{
-      method : "PUT",
-      headers : {
-        "Content-Type" : "application/json", 
-      },
-      body : JSON.stringify({ title,description }),
-    })
+    const response = await fetch(
+      `https://blogpost-mern-five.vercel.app/update-blog/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title, description }),
+      }
+    );
 
-    
-      if (response.status === 200) {
-        // console.log("Deleted");
-        toast.success("Blog updated successffully");
-        setEditButton(!editbutton)
-      }else{
+    if (response.status === 200) {
+      // console.log("Deleted");
+      toast.success("Blog updated successffully");
+      setEditButton(!editbutton);
+    } else {
       toast.error("Smoethinng went wrong");
     }
-  }
+  };
 
   return (
     <>
-      
       <Toaster position="top-center" reverseOrder={false} />
+      <div className="flex flex-row justify-center mt-8 items-center">
+
+      <MoonLoader 
+    // cssOverride={"display: flex; align-items: center;"}
+
+        color={"#000000"}
+        loading={loading}
+        size={50}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+      </div>
+
       {posts.map((post) => {
         // {console.log(post)}
         return (
@@ -94,7 +119,9 @@ const Home = () => {
               />
             </div>
             <h1
-              className={"font-bold text-lg my-2 outline-none focus:bg-gray-200"}
+              className={
+                "font-bold text-lg my-2 outline-none focus:bg-gray-200"
+              }
               contentEditable={editbutton}
               onInput={(e) => setTitle(e.target.innerText)}
             >
@@ -113,7 +140,8 @@ const Home = () => {
                 selectedPost === post._id && editbutton ? "block" : "hidden"
               }
                 font-bold bg-purple-400 text-white px-3 py-1 my-1 mt-2 rounded-md `}
-            onClick={()=>handleUpdateBlog(post._id)}>
+              onClick={() => handleUpdateBlog(post._id)}
+            >
               Save
             </button>
           </div>
