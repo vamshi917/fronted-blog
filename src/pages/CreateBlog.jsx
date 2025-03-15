@@ -9,6 +9,11 @@ const CreateBlog = () => {
     e.preventDefault();
     const title = e.target.title.value;
     const description = e.target.description.value;
+
+    if(!title || !description){
+      toast.error("Please fill all the inputs")
+      return;
+    }
     // console.log(e.target.title.value);
 
     // const blog = () => {
@@ -65,7 +70,7 @@ const CreateBlog = () => {
 
           <button
             type="submit"
-            className=" py-3 bg-purple-300 rounded-md font-bold text-xl text-white hover:bg-purple-500"
+            className=" py-3 bg-purple-500 rounded-md font-bold text-xl text-white"
           >
             Post
           </button>
